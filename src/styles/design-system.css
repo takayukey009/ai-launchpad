@@ -1,0 +1,294 @@
+/* ==========================================================================
+   NEXUS LAUNCHPAD // DESIGN.md SPECIFICATION
+   Inspired by VoltAgent, Raycast, Linear, and Vercel Design Systems
+   ========================================================================== */
+
+:root {
+  /* Dark Mode Palette (Primary) */
+  --bg-void: #050608;
+  --bg-surface-1: #0b0d13;
+  --bg-surface-2: #12151e;
+  --bg-surface-3: #191d2a;
+  --bg-surface-hover: rgba(255, 255, 255, 0.05);
+  --bg-glass: rgba(11, 13, 19, 0.75);
+  --bg-glass-strong: rgba(11, 13, 19, 0.92);
+
+  /* Border Tokens */
+  --border-dim: rgba(255, 255, 255, 0.06);
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-focus: rgba(94, 106, 210, 0.6);
+  --border-glow: rgba(94, 106, 210, 0.3);
+
+  /* Typography */
+  --text-primary: #f0f2f5;
+  --text-secondary: #949cae;
+  --text-muted: #5e6678;
+  --text-dim: #3e4453;
+
+  /* Accent Colors (Linear Indigo, Raycast Coral, Cyber Cyan, Emerald) */
+  --accent-linear: #5e6ad2;
+  --accent-linear-light: #7c88eb;
+  --accent-raycast: #ff6363;
+  --accent-cyan: #00f2fe;
+  --accent-emerald: #10b981;
+  --accent-purple: #a855f7;
+  --accent-amber: #f59e0b;
+
+  /* Glows */
+  --glow-linear: 0 0 30px -5px rgba(94, 106, 210, 0.4);
+  --glow-cyan: 0 0 30px -5px rgba(0, 242, 254, 0.35);
+  --glow-emerald: 0 0 20px -3px rgba(16, 185, 129, 0.4);
+
+  /* Fonts */
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+  /* Shadows */
+  --shadow-launcher: 0 25px 80px -20px rgba(0, 0, 0, 0.9), 0 0 0 1px var(--border-subtle);
+  --shadow-bento: 0 10px 40px -15px rgba(0, 0, 0, 0.7);
+}
+
+/* Light Theme Overrides */
+html.light {
+  --bg-void: #f8fafc;
+  --bg-surface-1: #ffffff;
+  --bg-surface-2: #f1f5f9;
+  --bg-surface-3: #e2e8f0;
+  --bg-surface-hover: rgba(0, 0, 0, 0.04);
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  --bg-glass-strong: rgba(255, 255, 255, 0.95);
+
+  --border-dim: rgba(0, 0, 0, 0.06);
+  --border-subtle: rgba(0, 0, 0, 0.12);
+  --border-focus: rgba(94, 106, 210, 0.7);
+  --border-glow: rgba(94, 106, 210, 0.2);
+
+  --text-primary: #090d16;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+
+  --shadow-launcher: 0 20px 60px -15px rgba(0, 0, 0, 0.15), 0 0 0 1px var(--border-subtle);
+  --shadow-bento: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+}
+
+/* Base resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-void);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background Atmospheric Lights & Sub-pixel Grid */
+.ambient-bg-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ambient-dot-grid {
+  position: absolute;
+  inset: 0;
+  background-size: 24px 24px;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 10%, #000 60%, transparent 100%);
+}
+
+html.light .ambient-dot-grid {
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+}
+
+.ambient-aurora-1 {
+  position: absolute;
+  top: -200px;
+  left: 20%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(94, 106, 210, 0.15) 0%, rgba(0, 242, 254, 0.05) 50%, transparent 70%);
+  filter: blur(100px);
+  animation: auroraFlow 20s ease-in-out infinite alternate;
+}
+
+.ambient-aurora-2 {
+  position: absolute;
+  top: 150px;
+  right: 15%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(255, 99, 99, 0.1) 0%, rgba(168, 85, 247, 0.06) 50%, transparent 70%);
+  filter: blur(110px);
+  animation: auroraFlow2 25s ease-in-out infinite alternate;
+}
+
+@keyframes auroraFlow {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(80px, 50px) scale(1.15); }
+  100% { transform: translate(-60px, 90px) scale(0.9); }
+}
+
+@keyframes auroraFlow2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-60px, -40px) scale(1.1); }
+  100% { transform: translate(50px, 70px) scale(0.95); }
+}
+
+/* App Shell */
+.app-shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 20px 24px 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Status Pill & Pulse */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.status-indicator.live {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-indicator.beta {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-indicator.wip {
+  background: rgba(94, 106, 210, 0.12);
+  color: #a5b4fc;
+  border: 1px solid rgba(94, 106, 210, 0.3);
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  position: relative;
+}
+
+.pulse-dot.anim::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  animation: radarPulse 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes radarPulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Keyboard Shortcut Keycap */
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg-surface-3);
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  line-height: 1;
+}
+
+/* Global Buttons */
+.btn-raycast {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent-linear) 0%, #4752c4 100%);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--glow-linear);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.btn-raycast:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 25px rgba(94, 106, 210, 0.6);
+}
+
+.btn-surface {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.btn-surface:hover {
+  background: var(--bg-surface-3);
+  border-color: var(--border-focus);
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--border-dim);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-icon:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface-2);
+  border-color: var(--border-subtle);
+}
