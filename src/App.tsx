@@ -9,7 +9,7 @@ import { UserManualModal } from './components/UserManualModal';
 import { INITIAL_PROJECTS } from './data/projects';
 import type { Project } from './types/project';
 
-const STORAGE_KEY = 'togawa_ai_launchpad_v3';
+const STORAGE_KEY = 'togawa_ai_launchpad_v20260815_final';
 const THEME_KEY = 'togawa_theme_mode';
 
 export function App() {
@@ -22,11 +22,18 @@ export function App() {
   // View mode: 'launcher' (Raycast/Linear) | 'bento' (Vercel) | 'terminal' (VoltAgent/Warp)
   const [viewMode, setViewMode] = useState<'launcher' | 'bento' | 'terminal'>('launcher');
 
-  // Projects state
+  // Projects state: Merge INITIAL_PROJECTS with any newly user-created projects
   const [projects, setProjects] = useState<Project[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const localProjects: Project[] = JSON.parse(saved);
+        // Find custom projects added by user that are not in INITIAL_PROJECTS
+        const customProjects = localProjects.filter(
+          (lp) => !INITIAL_PROJECTS.some((ip) => ip.id === lp.id)
+        );
+        return [...INITIAL_PROJECTS, ...customProjects];
+      }
     } catch (e) {
       console.error(e);
     }
