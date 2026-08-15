@@ -9,7 +9,7 @@ import { UserManualModal } from './components/UserManualModal';
 import { INITIAL_PROJECTS } from './data/projects';
 import type { Project } from './types/project';
 
-const STORAGE_KEY = 'togawa_ai_launchpad_v2';
+const STORAGE_KEY = 'togawa_ai_launchpad_v3';
 const THEME_KEY = 'togawa_theme_mode';
 
 export function App() {
