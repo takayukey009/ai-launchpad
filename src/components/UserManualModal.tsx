@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, BookOpen, Command, Sparkles, Plus, ExternalLink, ArrowRight } from 'lucide-react';
+import { X, BookOpen, Command, Sparkles, Plus, Cloud, Globe, GitBranch, ShieldCheck } from 'lucide-react';
 
 interface UserManualModalProps {
   isOpen: boolean;
@@ -7,13 +7,13 @@ interface UserManualModalProps {
 }
 
 export const UserManualModal: React.FC<UserManualModalProps> = ({ isOpen, onClose }) => {
-  const [activeTab, setActiveTab] = useState<'shortcuts' | 'modes' | 'add'>('shortcuts');
+  const [activeTab, setActiveTab] = useState<'shortcuts' | 'modes' | 'add' | 'ops'>('shortcuts');
 
   if (!isOpen) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" style={{ maxWidth: '680px' }} onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content" style={{ maxWidth: '720px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div
@@ -33,10 +33,10 @@ export const UserManualModal: React.FC<UserManualModalProps> = ({ isOpen, onClos
             </div>
             <div>
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 700 }}>
-                TOGAWA.OS // 使い方マニュアル
+                TOGAWA.OS // 使い方＆運用マニュアル
               </h3>
               <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                自作AIサービス・ツールの活用頻度を最大化する操作ガイド
+                自作AIサービスの活用頻度を最大化する操作と運用の完全ガイド
               </p>
             </div>
           </div>
@@ -47,14 +47,14 @@ export const UserManualModal: React.FC<UserManualModalProps> = ({ isOpen, onClos
 
         <div className="modal-body">
           {/* Sub Navigation Tabs */}
-          <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '8px' }}>
+          <div style={{ display: 'flex', gap: '6px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '8px', overflowX: 'auto' }}>
             <button
               type="button"
               className={`cat-pill-mini ${activeTab === 'shortcuts' ? 'active' : ''}`}
               onClick={() => setActiveTab('shortcuts')}
             >
               <Command size={13} />
-              <span>キーボード操作・ショートカット</span>
+              <span>キーボード操作</span>
             </button>
             <button
               type="button"
@@ -70,7 +70,15 @@ export const UserManualModal: React.FC<UserManualModalProps> = ({ isOpen, onClos
               onClick={() => setActiveTab('add')}
             >
               <Plus size={13} />
-              <span>新規ツールの追加方法</span>
+              <span>新規ツールの追加</span>
+            </button>
+            <button
+              type="button"
+              className={`cat-pill-mini ${activeTab === 'ops' ? 'active' : ''}`}
+              onClick={() => setActiveTab('ops')}
+            >
+              <Cloud size={13} color="var(--accent-cyan)" />
+              <span>自動デプロイ＆独自ドメイン設定</span>
             </button>
           </div>
 
@@ -154,7 +162,7 @@ export const UserManualModal: React.FC<UserManualModalProps> = ({ isOpen, onClos
                   💻 3. Terminal（CLIマトリクスモード）
                 </h4>
                 <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                  開発者向けコマンドライン。<code>list</code> で一覧出力、<code>open hina-tasks</code> で即時起動、<code>status</code> で稼働チェックができます。
+                  開発者向けコマンドライン。<code>list</code> で一覧出力、<code>open yagate</code> や <code>open hina-tasks</code> で即時起動、<code>status</code> で稼働チェックができます。
                 </p>
               </div>
             </div>
@@ -191,6 +199,41 @@ export const UserManualModal: React.FC<UserManualModalProps> = ({ isOpen, onClos
                     <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>🎉 紙吹雪とともに画面に即時登録され、すぐに使えるようになります！</p>
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 4: OPS (DEPLOY & DOMAINS) */}
+          {activeTab === 'ops' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {/* GitHub CI/CD */}
+              <div style={{ padding: '14px 16px', background: 'var(--bg-surface-2)', borderRadius: '12px', border: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-emerald)', fontSize: '14px', fontWeight: 700 }}>
+                  <GitBranch size={16} />
+                  <span>GitHub連動の完全自動デプロイ</span>
+                </div>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                  今後、プロジェクトのコードや <code>projects.ts</code> を編集して GitHub に <code>git push</code> するだけで、<strong>Cloudflareが数秒で自動検知して本番サイト（ai-launchpad.pages.dev）を最新版に更新</strong>してくれます。
+                </p>
+              </div>
+
+              {/* Custom Domains Setup */}
+              <div style={{ padding: '14px 16px', background: 'var(--bg-surface-2)', borderRadius: '12px', border: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-cyan)', fontSize: '14px', fontWeight: 700 }}>
+                  <Globe size={16} />
+                  <span>独自ドメイン・サブドメインの設定手順（任意）</span>
+                </div>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                  もしご自身の独自ドメイン（例: <code>togawa.dev</code> や <code>hub.togawa.dev</code>）をこのポータルに割り当てたい場合の手順です：
+                </p>
+
+                <ol style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.8', paddingLeft: '20px' }}>
+                  <li>Cloudflareダッシュボード &gt; <strong>Workers &amp; Pages</strong> を開く</li>
+                  <li>デプロイした <strong>`ai-launchpad`</strong> をクリック</li>
+                  <li><strong>「Custom domains（カスタムドメイン）」</strong> タブ &gt; <strong>「Set up a custom domain」</strong> をクリック</li>
+                  <li>割り当てたいドメイン（例: <code>togawa.dev</code> や <code>hub.togawa.dev</code>）を入力して保存</li>
+                  <li><strong>DNSレコードとSSL証明書が完全自動で設定され、即座にアクセス可能になります！</strong></li>
+                </ol>
               </div>
             </div>
           )}
